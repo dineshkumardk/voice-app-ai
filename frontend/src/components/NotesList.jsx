@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { getNotes } from "../services/api";
 import NoteCard from "./NoteCard";
+import Recorder from "./Recorder";
 
 const NotesList = () => {
   const [notes, setNotes] = useState([]);
@@ -18,19 +19,28 @@ const NotesList = () => {
   useEffect(() => {
     loadNotes();
 
-    // Optional: listen for global refresh events if used elsewhere
+    // Optional: listen for global refresh events
     const refreshHandler = () => loadNotes();
     window.addEventListener("refreshNotes", refreshHandler);
     return () => window.removeEventListener("refreshNotes", refreshHandler);
   }, []);
 
-  if (!notes.length) return <p>No notes yet.</p>;
+  // Handle new note from Recorder
+  const handleNewNote = (newNote) => {
+    setNotes((prev) => [newNote, ...prev]);
+  };
 
   return (
     <div>
-      {notes.map((note) => (
-        <NoteCard key={note._id} note={note} onUpdate={loadNotes} />
-      ))}
+      <Recorder onUpload={handleNewNote} />
+
+      {notes.length === 0 ? (
+        <p>No notes yet.</p>
+      ) : (
+        notes.map((note) => (
+          <NoteCard key={note._id} note={note} onUpdate={loadNotes} />
+        ))
+      )}
     </div>
   );
 };

@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const API_BASE = "https://voice-notes-app-pw2a.onrender.com/api/notes";
+const API_BASE = "https://voice-notes-apps-1.onrender.com/api/notes";
 
 export const uploadAudio = (file) => {
   const formData = new FormData();
@@ -11,7 +11,7 @@ export const uploadAudio = (file) => {
 export const getNotes = () => axios.get(API_BASE);
 
 export const updateTranscript = (id, transcript) =>
-  axios.put(`${API_BASE}/${id}`, { transcript });
+  axios.put(`${API_BASE}/${id}/transcript`, { transcript });
 
 export const deleteNote = (id) => axios.delete(`${API_BASE}/${id}`);
 

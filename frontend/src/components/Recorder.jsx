@@ -14,9 +14,7 @@ const Recorder = ({ onUpload }) => {
       chunksRef.current = [];
 
       mediaRecorder.ondataavailable = (e) => {
-        if (e.data && e.data.size > 0) {
-          chunksRef.current.push(e.data);
-        }
+        if (e.data && e.data.size > 0) chunksRef.current.push(e.data);
       };
 
       mediaRecorder.onstop = async () => {
@@ -25,8 +23,9 @@ const Recorder = ({ onUpload }) => {
         try {
           await uploadAudio(blob);
           onUpload();
-        } catch (uploadError) {
-          console.error("Upload failed:", uploadError);
+        } catch (err) {
+          console.error("Upload failed:", err);
+          alert("Audio upload failed. Check console.");
         }
       };
 
@@ -35,7 +34,7 @@ const Recorder = ({ onUpload }) => {
       console.log("Recording started");
     } catch (err) {
       console.error("Could not start recording:", err);
-      alert("Microphone access is required to record audio.");
+      alert("Microphone access required.");
     }
   };
 
@@ -49,12 +48,8 @@ const Recorder = ({ onUpload }) => {
 
   return (
     <div>
-      <button onClick={startRecording} disabled={recording}>
-        Start Recording
-      </button>
-      <button onClick={stopRecording} disabled={!recording}>
-        Stop Recording
-      </button>
+      <button onClick={startRecording} disabled={recording}>Start Recording</button>
+      <button onClick={stopRecording} disabled={!recording}>Stop Recording</button>
     </div>
   );
 };

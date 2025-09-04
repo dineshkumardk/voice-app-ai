@@ -1,19 +1,17 @@
-import axios from "axios";
-import fs from "fs";
+import OpenAI from "openai";
 
-export async function transcribeWithOpenAI(filePath) {
-  const file = fs.createReadStream(filePath);
+const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
 
-  const response = await axios.post(
-    "https://api.openai.com/v1/audio/transcriptions",
-    file,
-    {
-      headers: {
-        Authorization: `Bearer ${process.env.OPENAI_API_KEY}`,
-        "Content-Type": "audio/webm",
-      },
-    }
-  );
+export async function transcribeWithOpenAIBuffer(audioBuffer) {
+  try {
+    const response = await openai.audio.transcriptions.create({
+      file: audioBuffer,
+      model: "whisper-1",
+    });
 
-  return response.data.text;
+    return response.text;
+  } catch (err) {
+    console.error("❌ Transcription failed:", err.response?.data || err.message);
+    throw err;
+  }
 }
